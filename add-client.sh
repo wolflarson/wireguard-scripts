@@ -26,7 +26,7 @@ else
 	wg genkey | tee "clients/$1/$1.priv" | wg pubkey > "clients/$1/$1.pub"
 	key=$(cat "clients/$1/$1.priv")
 	ip="$CIDRPrefix"$(( $(cat last-ip.txt | tr "." " " | awk '{print $4}') + 1))
-	FQDN=$(hostname -f)
+	FQDN="$(curl ifconfig.me)"
 	SERVER_PUB_KEY=$(cat "$wgPubKeyLocation")
 	cat wg0-client.example.conf | sed -e 's/:CLIENT_IP:/'"$ip"'/' | sed -e 's|:CLIENT_KEY:|'"$key"'|' | sed -e 's|:SERVER_PUB_KEY:|'"$SERVER_PUB_KEY"'|' | sed -e 's|:SERVER_ADDRESS:|'"$FQDN"'|' > clients/$1/wg0.conf
 	echo "$ip" > last-ip.txt
